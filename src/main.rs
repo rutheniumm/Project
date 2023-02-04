@@ -1,6 +1,5 @@
 use graphul::{Graphul, http::Methods};
 
-
 #[tokio::main]
 fn main() {
     let mut app = Graphul::new();

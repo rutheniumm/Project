@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 graphul = "0.4.6"
+tokio = "1.25.0"
