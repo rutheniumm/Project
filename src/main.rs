@@ -7,6 +7,7 @@ async fn main() {
     app.get("/", || async {
         "Hello, World 👋!"
     });
+    app.static_files("/", "public", FolderConfig::default())
 
     app.run("127.0.0.1:8000").await;
 }
