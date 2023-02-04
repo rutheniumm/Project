@@ -9,5 +9,5 @@ fn main() {
         "Hello, World 👋!"
     });
 
-    app.run("127.0.0.1:8000").await;
+    app.run("127.0.0.1:8000");
 }
