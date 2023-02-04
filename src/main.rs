@@ -2,7 +2,7 @@ use graphul::{Graphul, http::Methods};
 
 
 #[tokio::main]
-async fn main() {
+fn main() {
     let mut app = Graphul::new();
 
     app.get("/", || async {
