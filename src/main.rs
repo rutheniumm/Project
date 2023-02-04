@@ -1,4 +1,4 @@
-use graphul::{Graphul, http::Methods, FolderConfig};
+use graphul::{Graphul, FolderConfig};
 
 #[tokio::main]
 async fn main() {
