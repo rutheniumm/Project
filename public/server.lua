@@ -1,1 +1,3 @@
-http://127.0.0.1:8000/static/main.lua
+local http = game:GetService("HttpService")
+
+local s
