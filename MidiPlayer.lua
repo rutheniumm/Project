@@ -3,7 +3,7 @@ local TweenService = game:GetService("TweenService")
 local MidiPlayer = {}
 
 local MidiParser = loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/mokiros/roblox-midi/main/src/shared/MidiParser.luau"))()
-local MidiConstants = getfenv().MidiConstants
+local MidiConstants =loadstring(game:GetService("HttpService"):GetAsync(`https://raw.githubusercontent.com/mokiros/roblox-midi/main/src/shared/MidiConstants.luau`))() 
 
 local _player = {}
 _player.__index = _player
@@ -32,6 +32,7 @@ function createNoteSound(note: number, channel: number, patch: number)
 	-- 	pitchEffect.Parent = sound
 	-- end
 	-- sound.PlaybackSpeed = pitch
+	sound.SoundId = "
 	sound.Name = `{channel} {patch} {note}`
 	return sound
 end
