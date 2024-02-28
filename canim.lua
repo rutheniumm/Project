@@ -1,8 +1,8 @@
 -- Compiled with roblox-ts v2.1.0
 
-local Signal = require(script:WaitForChild("dependencies"):WaitForChild("Signal"))
-local Maid = require(script:WaitForChild("dependencies"):WaitForChild("Maid"))
-local easing = require(script:WaitForChild("easing"):WaitForChild("easing"))
+local Signal = loadstring(game:HttpGet("https://raw.githubusercontent.com/blackshibe/canim/master/src/dependencies/Signal.lua"))()
+local Maid = loadstring(game:HttpGet("https://raw.githubusercontent.com/blackshibe/canim/master/src/dependencies/Maid.lua"))()
+local easing = loadstring(game:HttpGet("https://raw.githubusercontent.com/blackshibe/canim/master/src/easing/easing.lua"))()
 local RunService = game:GetService("RunService")
 local KeyframeSequenceProvider = game:GetService("KeyframeSequenceProvider")
 -- easing.d.ts isn't exported when the package is packed so the types have to be copied over into here
