@@ -32,7 +32,6 @@ function createNoteSound(note: number, channel: number, patch: number)
 	-- 	pitchEffect.Parent = sound
 	-- end
 	-- sound.PlaybackSpeed = pitch
-	sound.SoundId = "
 	sound.Name = `{channel} {patch} {note}`
 	return sound
 end
