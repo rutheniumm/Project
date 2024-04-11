@@ -3,7 +3,7 @@ local TweenService = game:GetService("TweenService")
 local MidiPlayer = {}
 
 local MidiParser = loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/mokiros/roblox-midi/main/src/shared/MidiParser.luau"))()
-local MidiConstants =loadstring(game:GetService("HttpService"):GetAsync(`https://raw.githubusercontent.com/mokiros/roblox-midi/main/src/shared/MidiConstants.luau`))() 
+local MidiConstants = shared.CONSTANTS
 
 local _player = {}
 _player.__index = _player
