@@ -119,6 +119,7 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	      sound.PlaybackRegionsEnabled = true;
               sound.PlaybackRegion = NumberRange.new(note-1,note)
 	       game:GetService("Debris"):AddItem(sound, 1.05)
+			end
 		else 
 		local set = info[4]
 		transpose = set.Transpose or 0
