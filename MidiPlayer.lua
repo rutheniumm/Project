@@ -114,13 +114,12 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	if channel ~= 9 then
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 	      if info.Special then
-		if scale[nn] then
-			local nn = 24 + note
-				print(nn-1, nn)
+	     local nn = 1 + (note - 24)
+	     if scale[nn] then
 	      sound.PlaybackRegionsEnabled = true;
-              sound.PlaybackRegion = NumberRange.new(nn-1,nn)
-	       game:GetService("Debris"):AddItem(sound, 2)
-			end
+              sound.PlaybackRegion = NumberRange.new(nn, nn+1)
+	       game:GetService("Debris"):AddItem(sound, 1)
+	        end
 		else 
 		local set = info[4]
 		transpose = set.Transpose or 0
@@ -163,7 +162,12 @@ sound.PlaybackRegion = NumberRange.new(check, check + 3)
 	end
 	sound.PlaybackSpeed = pitch
 	sound.Volume = volume
-	sound:Play()
+local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
+if info.Special then
+		sound:Destroy()
+	else
+			sound:Play()
+	end
 end
 
 function _player:reset()
