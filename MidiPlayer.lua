@@ -114,11 +114,11 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	if channel ~= 9 then
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 	      if info.Special then
-		if scale[note] then
-		print("hewoogewogew")
+		if scale[71-note] then
+		print(note)
 	      sound.PlaybackRegionsEnabled = true;
-              sound.PlaybackRegion = NumberRange.new(note-1,note)
-	       game:GetService("Debris"):AddItem(sound, 1.05)
+              sound.PlaybackRegion = NumberRange.new((71-note)-1,71-note)
+	       game:GetService("Debris"):AddItem(sound, 2)
 			end
 		else 
 		local set = info[4]
