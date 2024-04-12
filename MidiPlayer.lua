@@ -112,8 +112,14 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	local volume = (velocity / 127) * (self.channelVolumes[channel] or 1)
 	local pitch = 1
 	if channel ~= 9 then
-				print(note, scale[note])
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
+	      if info.Special then
+		if scale[note] then
+		print("hewoogewogew")
+	      sound.PlaybackRegionsEnabled = true;
+              sound.PlaybackRegion = NumberRange.new(note-1,note)
+	       game:GetService("Debris"):AddItem(sound, 1.05)
+		else 
 		local set = info[4]
 		transpose = set.Transpose or 0
 		local pitchWheel = (self.channelPitches[channel] or 0x2000) - 0x2000
@@ -140,6 +146,7 @@ function _player:playNote(channel: number, note: number, velocity: number)
 			sound.Looped = true
 		else
 			sound.Looped = false
+		end
 		end
 	else
 		local info = MidiConstants.Percussion[note] or MidiConstants.Percussion[31]
