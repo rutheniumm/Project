@@ -222,6 +222,7 @@ function _player:update(deltaTime: number, ignoreNotes: boolean?)
 					local note = nextEvent[5]
 					local velocity = midiType == 0b1000 and 0 or nextEvent[6]
 					if velocity == 0 then
+						warn("yuh")
 						if not self.channelSustainPedal[channel] then
 							self:stopNote(channel, note)
 						end
