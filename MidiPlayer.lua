@@ -112,6 +112,7 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	local volume = (velocity / 127) * (self.channelVolumes[channel] or 1)
 	local pitch = 1
 	if channel ~= 9 then
+				print(note, scale[note])
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 		local set = info[4]
 		transpose = set.Transpose or 0
@@ -141,7 +142,6 @@ function _player:playNote(channel: number, note: number, velocity: number)
 			sound.Looped = false
 		end
 	else
-		print(note, scale[note])
 		local info = MidiConstants.Percussion[note] or MidiConstants.Percussion[31]
 		local data = info[2]
 		local set = data.Settings or {}
