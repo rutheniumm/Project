@@ -21,7 +21,6 @@ function createNoteSound(note: number, channel: number, patch: number)
 	if channel == 9 then
 		local info = MidiConstants.Percussion[note] or MidiConstants.Percussion[31]
 		sound.SoundId = info[2].Sound
-		print(note)
 	else
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 		sound.SoundId = info[3]
@@ -144,6 +143,9 @@ function _player:playNote(channel: number, note: number, velocity: number)
 		volume += set.Volume or 0
 		pitch = set.Pitch or pitch
 		sound.TimePosition = set.Start or 0
+local check = 3 * info[1]
+sound.PlaybackRegionsEnabled = true;
+sound.PlaybackRegion = NumberRange.new(check, check + 3)
 	end
 	sound.PlaybackSpeed = pitch
 	sound.Volume = volume
