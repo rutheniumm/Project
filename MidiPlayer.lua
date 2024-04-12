@@ -21,6 +21,9 @@ function createNoteSound(note: number, channel: number, patch: number)
 	if channel == 9 then
 		local info = MidiConstants.Percussion[note] or MidiConstants.Percussion[31]
 		sound.SoundId = info[2].Sound
+		if info == MidiConstants.Percussion[31] then
+			print(note)
+		end
 	else
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 		sound.SoundId = info[3]
