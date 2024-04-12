@@ -115,7 +115,7 @@ function _player:playNote(channel: number, note: number, velocity: number)
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 	      if info.Special then
 		if scale[71-note] then
-		print(note)
+		print(71-note)
 	      sound.PlaybackRegionsEnabled = true;
               sound.PlaybackRegion = NumberRange.new((71-note)-1,71-note)
 	       game:GetService("Debris"):AddItem(sound, 2)
