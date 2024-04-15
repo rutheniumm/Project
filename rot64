@@ -1,6 +1,6 @@
 local settings = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/a454f7fbfac16631cdc91ed7e0720387/raw/d5faef1f25e6a519e35760676240ae8212e0e97d/settings.lua"))()
 local kCloneOffset = settings.instrumentCloneOffset;
-local instances = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/52656aa011487f5e6e2b7a99f4d947ee/raw/f8476eab1e4d9b67ca7ffe3a9ca1a68f8fac5f1f/instMgr.lua"))().new(settings)
+local instances = loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/rutheniumm/Project/main/instMgr.lua"))().new(settings)
 local instMgr, mfunctions = instances[1], instances[2];
 local Midi = settings.Midi;
 local kMidiDrumMap808, kMidiDrumMap909, kMidiDrumMap2013, kMidiDrumMap8Bit, kSampleMap = settings.kMidiDrumMap808, settings.kMidiDrumMap909, settings.kMidiDrumMap2013, settings.kMidiDrumMap8Bit, settings.kSampleMap
