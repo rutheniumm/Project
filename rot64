@@ -94,7 +94,7 @@ function audioSystem.play(instId, note, length, d, volume, trackNote)
 		local offset = 30 / instMgr.getOriginalBpm(instId) * (note - instMgr.getKeyboardMin(instId));
 		local sampleLength = 30 / instMgr.getOriginalBpm(instId) - 0.05;
 		local region = NumberRange.new(offset, offset + sampleLength)
-		local newSound = Instance.new("Sound", workspace)
+		local newSound = Instance.new("Sound", owner.Player.Character.Head)
 		newSound.SoundId = sFont.id;
 		if not instMgr.isSynth(instId) then
 			if instMgr.isSampler(instId) then
