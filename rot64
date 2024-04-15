@@ -1,4 +1,4 @@
-local settings = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/e729b06c1cd02e5a5046178fa1beb6fe/raw/7d1bda88aa834a3d590c8e534aad2d3ced313086/fonts.lua"))()
+local settings = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/5c30e3d3c64a87a89ba0802136d1be54/raw/dea087acc2025355d775a082306e41f9abe1cd47/gistfile1.txt"))()
 local kCloneOffset = settings.instrumentCloneOffset;
 local instances = loadstring(game:GetService("HttpService"):GetAsync("https://raw.githubusercontent.com/rutheniumm/Project/main/instMgr.lua"))().new(settings)
 local instMgr, mfunctions = instances[1], instances[2];
