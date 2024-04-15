@@ -1,0 +1,201 @@
+local settings = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/a454f7fbfac16631cdc91ed7e0720387/raw/d5faef1f25e6a519e35760676240ae8212e0e97d/settings.lua"))()
+local kCloneOffset = settings.instrumentCloneOffset;
+local instances = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/52656aa011487f5e6e2b7a99f4d947ee/raw/f8476eab1e4d9b67ca7ffe3a9ca1a68f8fac5f1f/instMgr.lua"))().new(settings)
+local instMgr, mfunctions = instances[1], instances[2];
+local Midi = settings.Midi;
+local kMidiDrumMap808, kMidiDrumMap909, kMidiDrumMap2013, kMidiDrumMap8Bit, kSampleMap = settings.kMidiDrumMap808, settings.kMidiDrumMap909, settings.kMidiDrumMap2013, settings.kMidiDrumMap8Bit, settings.kSampleMap
+local piano, detectScale, noteNameToIndex, midiNoteNames, midiNoteNamesToIndex, pianoToIndex = mfunctions.piano, mfunctions.detectScale, mfunctions.noteNameToIndex, mfunctions.midiNoteNames, mfunctions.midiNoteNamesToIndex, mfunctions.pianoToIndex
+local song = {
+	sleepTime = 136.36363636363637;
+	nextId = 0;
+}
+local preloadInstruments = {
+}
+local instrumentNameToIndex = {}
+for category, v in pairs(settings.instrumentCategories) do 
+	for _, instId in pairs(v) do 
+		if instMgr.isSampler(instId) then
+			table.insert(preloadInstruments, instId)
+		end
+	end
+end
+function freq(note, offset)
+	return ((440 / 32) * math.pow(2, ((note + offset) / 12)) / 440)
+end
+
+local Samplers = {}
+SamplerNote = {}
+SamplerNote.__index = SamplerNote
+function SamplerNote.new(sample, timeOffset, semiTones)
+	local self = setmetatable({}, SamplerNote)
+	self.sample = sample
+	self.timeOffset = timeOffset
+	self.detune = semiTones * 100
+	return self
+end
+Sampler = {}
+Sampler.__index = Sampler
+local A1 = {{detune = 0, sample = {}, timeOffset = 16}, {detune = 100, sample = {}, timeOffset = 16}, {detune = -100, sample = {}, timeOffset = 32}, {detune = 0, sample = {}, timeOffset = 32}, {detune = 100, sample = {}, timeOffset = 32}, {detune = -100, sample = {}, timeOffset = 48}, {detune = 0, sample = {}, timeOffset = 48}, {detune = 100, sample = {}, timeOffset = 48}, {detune = -100, sample = {}, timeOffset = 64}, {detune = 0, sample = {}, timeOffset = 64}, {detune = 100, sample = {}, timeOffset = 64}, {detune = -100, sample = {}, timeOffset = 80}, {detune = 0, sample = {}, timeOffset = 80}, {detune = 100, sample = {}, timeOffset = 80}, {detune = -100, sample = {}, timeOffset = 96}, {detune = 0, sample = {}, timeOffset = 96}, {detune = 100, sample = {}, timeOffset = 96}, {detune = -100, sample = {}, timeOffset = 112}, {detune = 0, sample = {}, timeOffset = 112}, {detune = 100, sample = {}, timeOffset = 112}, {detune = -100, sample = {}, timeOffset = 128}, {detune = 0, sample = {}, timeOffset = 128}, {detune = 100, sample = {}, timeOffset = 128}, {detune = -100, sample = {}, timeOffset = 144}, {detune = 0, sample = {}, timeOffset = 144}, {detune = 100, sample = {}, timeOffset = 144}, {detune = -100, sample = {}, timeOffset = 160}, {detune = 0, sample = {}, timeOffset = 160}, {detune = 100, sample = {}, timeOffset = 160}, {detune = -100, sample = {}, timeOffset = 176}, {detune = 0, sample = {}, timeOffset = 176}, {detune = 100, sample = {}, timeOffset = 176}, {detune = -100, sample = {}, timeOffset = 192}, {detune = 0, sample = {}, timeOffset = 192}, {detune = 100, sample = {}, timeOffset = 192}, {detune = -100, sample = {}, timeOffset = 208}, {detune = 0, sample = {}, timeOffset = 208}, {detune = 100, sample = {}, timeOffset = 208}, {detune = -100, sample = {}, timeOffset = 224}, {detune = 0, sample = {}, timeOffset = 224}, {detune = 100, sample = {}, timeOffset = 224}, {detune = -100, sample = {}, timeOffset = 240}, {detune = 0, sample = {}, timeOffset = 240}, {detune = 100, sample = {}, timeOffset = 240}, {detune = -100, sample = {}, timeOffset = 256}, {detune = 0, sample = {}, timeOffset = 256}, {detune = 100, sample = {}, timeOffset = 256}, {detune = -100, sample = {}, timeOffset = 272}, {detune = 0, sample = {}, timeOffset = 272}, {detune = 100, sample = {}, timeOffset = 272}, {detune = -100, sample = {}, timeOffset = 288}, {detune = 0, sample = {}, timeOffset = 288}, {detune = 100, sample = {}, timeOffset = 288}, {detune = -100, sample = {}, timeOffset = 304}, {detune = 0, sample = {}, timeOffset = 304}, {detune = 100, sample = {}, timeOffset = 304}, {detune = -100, sample = {}, timeOffset = 320}, {detune = 0, sample = {}, timeOffset = 320}, {detune = 100, sample = {}, timeOffset = 320}, {detune = -100, sample = {}, timeOffset = 336}, {detune = 0, sample = {}, timeOffset = 336}, {detune = 100, sample = {}, timeOffset = 336}, {detune = -100, sample = {}, timeOffset = 352}, {detune = 0, sample = {}, timeOffset = 352}, {detune = 100, sample = {}, timeOffset = 352}, {detune = -100, sample = {}, timeOffset = 368}, {detune = 0, sample = {}, timeOffset = 368}, {detune = 100, sample = {}, timeOffset = 368}, {detune = -100, sample = {}, timeOffset = 384}, {detune = 0, sample = {}, timeOffset = 384}, {detune = 100, sample = {}, timeOffset = 384}, {detune = -100, sample = {}, timeOffset = 400}}
+local PreloadedSamplerNotes = {
+	[41] = A1;
+	[43] = A1;
+}
+function Sampler.new(baseId, noteNames, sample, offset)
+	local self = setmetatable({}, Sampler)
+	self.offset = offset or 0
+	self.samplerNotes = {}
+	return self
+end
+
+function Sampler:getNote(i)
+	return PreloadedSamplerNotes[43][(i+1) - self.offset]
+end
+
+function getMap(baseInstId)
+	local map = midiNoteNamesToIndex
+	if (baseInstId == 36) then
+		map = Midi.drumKit808Map
+	elseif (baseInstId == 39) then
+		map = Midi.drumKit8BitMap
+	elseif (baseInstId == 40) then
+		map = Midi.drumKit2013Map
+	elseif (baseInstId == 42) then
+		map = Midi.drumKit909Map
+	end
+	return map;
+end
+
+
+function newNote(cSong, type, time, length, instrument, volume)
+	local this = {}
+	this.song = cSong;
+	this.time = time;
+	this.intTime = math.floor(time);
+	this.fracTime = this.time - this.intTime;
+	this.type = type;
+	this.length = length;
+	this.instrument = instrument;
+	this.volume = volume;
+	this.selected = false;
+	this.id = cSong.nextId + 1;
+	this.offsetX = 0;
+	this.offsetY = 0;
+	this.offsetWidth = 0;
+	return this;
+end
+local audioSystem = {}
+local notes = {}
+local sT = tick()
+function audioSystem.play(instId, note, length, d, volume, trackNote)
+	task.delay(d, function()
+		local sTime = (tick() - sT)
+		local timePerNote = instMgr.getSamplerTimePerNote(instId)
+		local sFont = settings.fonts[settings.instruments[instId + 1]]
+		local offset = 30 / instMgr.getOriginalBpm(instId) * (note - instMgr.getKeyboardMin(instId));
+		local sampleLength = 30 / instMgr.getOriginalBpm(instId) - 0.05;
+		local region = NumberRange.new(offset, offset + sampleLength)
+		local newSound = Instance.new("Sound", workspace)
+		newSound.SoundId = sFont.id;
+		if not instMgr.isSynth(instId) then
+			if instMgr.isSampler(instId) then
+				local totalNote = Samplers[instId]:getNote(note)
+				region = NumberRange.new(totalNote.timeOffset, totalNote.timeOffset + math.clamp(timePerNote-length,0,16))
+				warn(totalNote, Samplers[instId])
+				if totalNote.detune == -100 then
+					newSound.Pitch = 0.95;
+				elseif totalNote.detune == 100 then
+					newSound.Pitch = 1.05;
+				end
+			end
+			newSound.PlaybackRegionsEnabled = true;
+			newSound.PlaybackRegion = region
+			newSound.TimePosition = newSound.PlaybackRegion.Min
+		else 
+			newSound.PlaybackSpeed = 1 + freq(note, -2)
+		end
+		newSound:Play()
+		newSound.Ended:Once(function()
+			task.wait(0.75);
+			newSound:Destroy()
+		end)
+	end)
+end
+
+for i, v in pairs(preloadInstruments) do 
+	local baseId = instMgr.baseId(v);
+	Samplers[v] = Sampler.new(baseId,kSampleMap[baseId],nil,instMgr.getKeyboardMin(baseId));
+end
+
+function playNote(instId, name, length, delay, keyHighlight, volume)
+	if volume == 0 or length <= 0 then
+		return
+	end
+	local trackNote = false;
+	local idx = pianoToIndex[name]
+	warn(name, pianoToIndex[name])
+
+	local noteIndex = settings.numNotes - idx - 1
+	if noteIndex >= instMgr.getKeyboardMin(instId) and noteIndex <= instMgr.getKeyboardMax(instId) then
+		if length ~= nil then
+			audioSystem.play(instId, noteIndex, length, delay, volume, trackNote)
+		else
+			audioSystem.noteOn(instId, noteIndex, volume, trackNote)
+		end
+	end
+end
+
+local currentScale = settings.scales[1];
+
+function getKeyboardNote(keyCode, scale, instrument)
+	if (settings.punctuationCodes[keyCode.Name] == nil) then
+		keyCode = keyCode.Name:lower();
+	else
+		local punct = settings.punctuationCodes[keyCode]
+		if punct ~= nil then
+			keyCode = punct;
+		end
+	end
+
+	local _scale = #scale > 0 and scale or settings.scales[1]
+	local _scaleId = 0;
+	for i, v in pairs(settings.scales) do 
+		if v == _scale then
+			_scaleId = i;
+		end
+	end
+
+	for i, row in ipairs(settings.typingKeyboard) do
+		local idx = string.find(row, keyCode)
+		if idx ~= nil then
+			local n = (i - 1) + instMgr.getTypingKeyboardOctaveOffset(instrument)
+			if idx > settings.scaleOctaves[_scaleId] + 7 then
+				n = n + 2
+			elseif idx > settings.scaleOctaves[_scaleId] then
+				n = n + 1
+			end
+			return _scale[idx] .. n
+		end
+	end
+
+	return nil
+end
+
+
+local function hookNote(...)
+	local n = newNote(...);
+	table.insert(notes, n);
+	return n 
+end
+
+return {
+	playNote = playNote;
+	hookNote = hookNote;
+	mainFunctions = mfunctions;
+	midiNoteNames = midiNoteNames;
+	midiNoteNamesToIndex = midiNoteNamesToIndex;
+	instMgr = instMgr;
+	settings = settings;
+	getKeyboardNote = getKeyboardNote;
+	notes = notes;
+	song = song;
+}
