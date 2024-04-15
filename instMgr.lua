@@ -1,7 +1,7 @@
 return {new = function(settings)
 	local instMgr = {}
 	local kCloneOffset = settings.instrumentCloneOffset;
-	local mfunctions = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/9be9f8ba57906ee2805f6549fe6cd21b/raw/816dc7247d7aa5a8dd3432f24e7f2bae18442658/midifunctions.lua"))()(nil, settings)
+	local mfunctions = loadstring(game:GetService("HttpService"):GetAsync("https://gist.githubusercontent.com/rutheniumm/9be9f8ba57906ee2805f6549fe6cd21b/raw/816dc7247d7aa5a8dd3432f24e7f2bae18442658/midifunctions.lua"))()(instMgr, settings)
 	
 	local kMidiDrumMap808, kMidiDrumMap909, kMidiDrumMap2013, kMidiDrumMap8Bit, kSampleMap = settings.kMidiDrumMap808, settings.kMidiDrumMap909, settings.kMidiDrumMap2013, settings.kMidiDrumMap8Bit, settings.kSampleMap
 	local piano, detectScale, noteNameToIndex, midiNoteNames, midiNoteNamesToIndex, pianoToIndex = mfunctions.piano, mfunctions.detectScale, mfunctions.noteNameToIndex, mfunctions.midiNoteNames, mfunctions.midiNoteNamesToIndex, mfunctions.pianoToIndex
