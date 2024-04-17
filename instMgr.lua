@@ -83,11 +83,11 @@ return {new = function(settings)
 	end
 
 	function instMgr.getKeyboardMin(instId)
-		return settings.min[instMgr.baseId(instId+1)]
+		return settings.min[instMgr.baseId(instId)]
 	end
 
 	function instMgr.getKeyboardMax(instId)
-		return settings.max[instMgr.baseId(instId+1)]
+		return settings.max[instMgr.baseId(instId + 1)]
 	end
 
 	function instMgr.getVolume(instId)
