@@ -97,7 +97,7 @@ function _player:stopNote(channel: number, note: number, instant: boolean?)
 	end
 end
 
-function _player:playNote(channel: number, note: number, velocity: number)
+function _player:playNote(channel: number, note: number, velocity: number) 
 	self:stopNote(channel, note, true)
 	local noteIndex = getNoteIndex(channel, note)
 	local patch = self.channelInstruments[channel] or 0
