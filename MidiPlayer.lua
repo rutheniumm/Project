@@ -16,29 +16,8 @@ function getNoteIndex(channel: number, note: number)
 	return channel * 128 + note + 1
 end
 local scale = {"C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5", "C6", "C#6", "D6", "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6", "A#6", "B6", "C7", "C#7", "D7", "D#7", "E7", "F7", "F#7", "G7", "G#7", "A7", "A#7", "B7"}
-
-function createNoteSound(note: number, channel: number, patch: number)
-	local sound = Instance.new("Sound")
-	if channel == 9 then
-		local info = MidiConstants.Percussion[note] or MidiConstants.Percussion[31]
-		sound.SoundId = info[2].Sound
-		if info == MidiConstants.Percussion[31] then
-		end
-	else
-		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
-		sound.SoundId = info[3]
-	end
-	-- local pitch = noteToPitch(note, info[4].Transpose or 0)
-	-- if pitch ~= 1 then
-	-- 	local pitchEffect = Instance.new("PitchShiftSoundEffect")
-	-- 	pitchEffect.Octave = pitch
-	-- 	pitchEffect.Parent = sound
-	-- end
-	-- sound.PlaybackSpeed = pitch
-	sound.Name = `{channel} {patch} {note}`
-	return sound
-end
-
+local playNote;
+if (shared.playNote ~= nil) then playNote = shared.playNote end
 function _player:_clearSounds()
 	for i, sound in self.noteSounds do
 		sound:Destroy()
@@ -82,17 +61,17 @@ function _player:stopNote(channel: number, note: number, instant: boolean?)
 	end
 	if sound then
 		if instant == true then
-			sound:Stop()
+			--//sound:Stop()
 		else
-			local tweenInfo = TweenInfo.new(fadeTime)
-			local tween = TweenService:Create(sound, tweenInfo, { Volume = 0 })
+			--//local tweenInfo = TweenInfo.new(fadeTime)
+			--//local tween = TweenService:Create(sound, tweenInfo, { Volume = 0 })
 			tween.Completed:Connect(function(state)
 				if state == Enum.PlaybackState.Completed then
-					sound:Stop()
+					--//sound:Stop()
 				end
 			end)
-			self.noteTweens[index] = tween
-			tween:Play()
+			--//self.noteTweens[index] = tween
+			--//tween:Play()
 		end
 	end
 end
@@ -101,24 +80,13 @@ function _player:playNote(channel: number, note: number, velocity: number)
 	self:stopNote(channel, note, true)
 	local noteIndex = getNoteIndex(channel, note)
 	local patch = self.channelInstruments[channel] or 0
-	local sound = self.noteSounds[noteIndex]
-	if not sound then
-		sound = createNoteSound(note, channel, patch)
-		sound.Parent = self.parent
-		self.noteSounds[noteIndex] = sound
-	end
 	local transpose = 0
 	local volume = (velocity / 127) * (self.channelVolumes[channel] or 1)
 	local pitch = 1
 	if channel ~= 9 then
 		local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 	      if info.Special then
-	     local nn = 1 + (note - 24)
-	     if scale[nn] then
-	      sound.PlaybackRegionsEnabled = true;
-              sound.PlaybackRegion = NumberRange.new(nn, nn+1)
-	       game:GetService("Debris"):AddItem(sound, 1)
-	        end
+
 		else 
 		local set = info[4]
 		transpose = set.Transpose or 0
@@ -131,21 +99,21 @@ function _player:playNote(channel: number, note: number, velocity: number)
 			volume += set.Gain
 		end
 		if set.FadeIn then
-			local tweenInfo = TweenInfo.new(set.FadeIn)
-			local tween = TweenService:Create(sound, tweenInfo, { Volume = volume })
-			volume = 0
-			self.noteTweens[noteIndex] = tween
-			tween:Play()
+			--//local tweenInfo = TweenInfo.new(set.FadeIn)
+			--//local tween = TweenService:Create(sound, tweenInfo, { Volume = volume })
+			--//volume = 0
+			--//self.noteTweens[noteIndex] = tween
+			--//tween:Play()
 		elseif set.Decay then
-			local tweenInfo = TweenInfo.new(set.Decay[1])
-			local tween = TweenService:Create(sound, tweenInfo, { Volume = set.Decay[2] })
-			self.noteTweens[noteIndex] = tween
-			tween:Play()
+			--//local tweenInfo = TweenInfo.new(set.Decay[1])
+			--//local tween = TweenService:Create(sound, tweenInfo, { Volume = set.Decay[2] })
+			--//self.noteTweens[noteIndex] = tween
+			--//tween:Play()
 		end
 		if set.Loop then
-			sound.Looped = true
+			--//sound.Looped = true
 		else
-			sound.Looped = false
+			--//sound.Looped = false
 		end
 		end
 	else
@@ -154,18 +122,16 @@ function _player:playNote(channel: number, note: number, velocity: number)
 		local set = data.Settings or {}
 		volume += set.Volume or 0
 		pitch = set.Pitch or pitch
-		sound.TimePosition = set.Start or 0
-local check = 3 * info[1]
-sound.PlaybackRegionsEnabled = true;
-sound.PlaybackRegion = NumberRange.new(check, check + 3)
+		local instrumentId = table.find(MidiConstants.Patches, info);
+		playNote(shared.instruments[shared.instruments[instrumentId] ~= nil and instrumentId or 0], noteIndex);
 	end
-	sound.PlaybackSpeed = pitch
-	sound.Volume = volume
+	--//sound.PlaybackSpeed = pitch
+	--//sound.Volume = volume
 local info = MidiConstants.Patches[patch] or MidiConstants.Patches[0]
 if info.Special then
-		sound:Destroy()
+		--//sound:Destroy()
 	else
-			sound:Play()
+			--//sound:Play()
 	end
 end
 
